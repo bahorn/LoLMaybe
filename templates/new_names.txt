@@ -1,0 +1,7 @@
+Given the usage of `{{ variable_type }} {{ variable_name }}` in the previously given code and summary, provide:
+* new_name: Suggest a new name for the variable based on the context of its usage.
+* reasoning: Give your reasoning.
+
+The variable may be user defined, or one created by the compiler.
+
+Respond with JSON.

@@ -1,0 +1,5 @@
+aaa
+s sym.main
+pdg > out-main.c
+s sym.blah
+pdg > out-blah.c
