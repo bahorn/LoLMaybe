@@ -3,7 +3,6 @@ import re
 
 import click
 import jinja2
-from ollama import Client
 from langchain_community.chat_models import ChatOllama
 from langchain_core.messages import HumanMessage
 from langchain_core.prompts import ChatPromptTemplate
@@ -173,7 +172,6 @@ class NewVariableName(BaseModel):
 class UnderstandCode:
     def __init__(self, code, host=HOST, model=MODEL):
         self._base = code
-        self._client = Client(host=host)
         self._llm = ChatOllama(
             base_url=host,
             model=model,
