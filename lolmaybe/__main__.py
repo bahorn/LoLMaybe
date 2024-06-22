@@ -6,7 +6,7 @@ import utils
 from astpasses import ASTProcess
 from astpasses.extract_variables import ExtractVariables
 from astpasses.replace_variables import ReplaceVariableNames
-from llm import UnderstandCode
+from llm import LLMCodeProcess, SummaryPass, SuggestNewVariableNamePass
 
 from defaults import HOST, MODEL
 
@@ -31,9 +31,10 @@ def main(filename, model, host):
     func_info = astp.run(ExtractVariables())
 
     # Should only be one function defined
-    uc = UnderstandCode(base, model=model, host=host)
-
-    print(f'/* {uc.get_summary().strip()} */')
+    lcp = LLMCodeProcess(base, host=host, model=model)
+    summary = lcp.run(SummaryPass())
+    summary = summary.strip()
+    print(f'/* {summary} */')
 
     new_names = {}
 
@@ -41,16 +42,17 @@ def main(filename, model, host):
         to_rename = {}
         seen_before = set()
 
-        for arg, typedef in definition['arguments'].items():
-            new = uc.suggest_new_variable_name(arg, ' '.join(typedef))
-            new_name = utils.normalize_name(new.get('new_name', arg))
-            new_name = utils.make_uniq(new_name, seen_before)
-            seen_before.add(new_name)
-            to_rename[arg] = new_name
-            print(f'/* {arg} -> {new_name} */')
+        to_process = []
+        to_process += [
+            (arg, typedef) for arg, typedef in definition['arguments'].items()
+        ]
+        to_process += [
+            (var, typedef) for var, typedef in definition['variables'].items()
+        ]
 
-        for var, typedef in definition['variables'].items():
-            new = uc.suggest_new_variable_name(var, ' '.join(typedef))
+        for var, typedef in to_process:
+            snvn = SuggestNewVariableNamePass(var, ' '.join(typedef))
+            new = lcp.run(snvn)
             new_name = utils.normalize_name(new.get('new_name', var))
             new_name = utils.make_uniq(new_name, seen_before)
             seen_before.add(new_name)
