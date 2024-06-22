@@ -173,7 +173,7 @@ class SuggestNewVariableNamePass(LLMCodePass):
 
         return new_model
 
-    def new_name_prompt(self, name, variable_type):
+    def new_name_prompt(self):
         t = templateEnv.get_template('new_names.txt')
         return HumanMessage(
             t.render(
@@ -184,5 +184,40 @@ class SuggestNewVariableNamePass(LLMCodePass):
     def run(self, code, history):
         return (
             history,
-            history.ask(self.new_name_prompt(None, None), keep=False)
+            history.ask(self.new_name_prompt(), keep=False)
+        )
+
+
+class SuggestNewVariableNameBatchPass(LLMCodePass):
+    """
+    Suggest a new name for a set of variables
+    """
+
+    def __init__(self, variables):
+        self._variables = variables
+
+    def name(self):
+        return 'suggest_new'
+
+    def history(self):
+        return 'summary'
+
+    def model_type(self):
+        def new_model(host, model):
+            return ChatModelJSON(None, host, model)
+
+        return new_model
+
+    def new_name_prompt(self):
+        t = templateEnv.get_template('new_names_batch.txt')
+        return HumanMessage(
+            t.render(
+               variables=self._variables
+            )
+        )
+
+    def run(self, code, history):
+        return (
+            history,
+            history.ask(self.new_name_prompt(), keep=False)
         )

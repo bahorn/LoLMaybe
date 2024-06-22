@@ -1,0 +1,8 @@
+Consider the variables in the previously given code and summary:
+{% for v, vtype in variables %}
+* `{{ vtype }} {{ v }}`
+{% endfor %}
+
+Provide a new unique descriptive name for each of the mentioned variables, that can be used in the code, to make it more understandable.
+
+Respond with JSON.
