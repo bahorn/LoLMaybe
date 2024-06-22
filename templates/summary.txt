@@ -1,5 +1,7 @@
-Give a short summary of the following psuedo C, which comes from the output of a decompiler of a program written in C.
-Keep your summary short to help come up with new variable names, but do not provide the new variable names yet.
+Give a short summary of the following psuedo C, which comes from the output of decompiler.
+The original program was written in C and compiled with gcc.
+
+Keep your summary short, to be as useful as possible with further analysis of the code.
 Do not mention that is is decompiler output, stay focused on summarizing.
 
 ```

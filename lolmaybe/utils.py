@@ -1,4 +1,9 @@
 import re
+import jinja2
+
+
+templateLoader = jinja2.FileSystemLoader(searchpath="./templates")
+templateEnv = jinja2.Environment(loader=templateLoader)
 
 
 def process_radare2_symbols(data):
@@ -20,6 +25,11 @@ def process_radare2_symbols(data):
             new = prefix[1]
         res = res.replace(findme, new)
     return res
+
+
+def wrap_code(code):
+    t = templateEnv.get_template('wrapper.txt')
+    return t.render(code=process_radare2_symbols(code))
 
 
 def normalize_name(name):
